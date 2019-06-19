@@ -9,5 +9,9 @@ mongoose.Promise = Promise;
 
 mongoose.connect(connection, {
 	keepAlive: true,
-	useMongoClient: true
+	useNewUrlParser: true,
 });
+
+module.exports = {
+	User: require('./user').default,
+}

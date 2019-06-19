@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Use routes here
+app.use("/api/auth", require("./routes/auth").default);
 
 app.use(function(req, res, next) {
 	const err = new Error("Not found");
