@@ -13,6 +13,7 @@ app.use("/api/auth", require("./routes/auth").default);
 app.use(function(req, res, next) {
 	const err = new Error("Not found");
 	err.status = 404;
+	err.code = 404;
 	next(err);
 });
 
