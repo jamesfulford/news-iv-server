@@ -8,11 +8,31 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Database
+const db = require('./models');
+
 // Routes
 const { loginRequired, ensureCorrectUser } = require("./middleware/auth");
 
 app.use("/api/auth", require("./routes/auth").default);
 app.use("/api/users/:userId/messages", loginRequired, ensureCorrectUser, require("./routes/messages").default);
+
+app.get('/api/messages', loginRequired, async function (req, res, next) {
+	try {
+		const messages = await db.Message
+			.find()
+			.sort({ createdAt: 'desc' })
+			.populate('user', {
+				username: true,
+				profileImageUrl: true,
+			});
+		return res.status(200).json(messages);
+	} catch (e) {
+		next(e);
+	}
+});
+
+// Error handling
 
 app.use(function(req, res, next) {
 	const err = new Error("Not found");
