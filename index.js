@@ -8,7 +8,11 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Routes
+const { loginRequired, ensureCorrectUser } = require("./middleware/auth");
+
 app.use("/api/auth", require("./routes/auth").default);
+app.use("/api/users/:userId/messages", loginRequired, ensureCorrectUser, require("./routes/messages").default);
 
 app.use(function(req, res, next) {
 	const err = new Error("Not found");
