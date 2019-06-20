@@ -13,5 +13,6 @@ mongoose.connect(connection, {
 });
 
 module.exports = {
-	User: require('./user').default,
-}
+	Message: require("./message").default,
+	User: require("./user").default
+};
