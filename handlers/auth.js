@@ -14,19 +14,21 @@ module.exports = {
 					code: 10000
 				});
 			}
-			const { id, username, profileImageUrl } = user;
 			const isMatch = await user.comparePassword(req.body.password);
 
 			if (isMatch) {
+				const { id, username, email, profileImageUrl } = user;
 				const token = jwt.sign({
 					id,
 					username,
+					email,
 					profileImageUrl,
 				}, process.env.SECRET_KEY);
 
 				return res.status(200).json({
 					id,
 					username,
+					email,
 					profileImageUrl,
 					token,
 				});
@@ -49,10 +51,11 @@ module.exports = {
 
 	signup: async function(req, res, next) {
 		try {
-			const { id, username, profileImageUrl } = await db.User.create(req.body);
+			const { id, username, profileImageUrl, email } = await db.User.create(req.body);
 			const token = jwt.sign(
 				{
 					id,
+					email,
 					username,
 					profileImageUrl
 				},
@@ -60,6 +63,7 @@ module.exports = {
 			);
 			return res.status(200).json({
 				id,
+				email,
 				username,
 				profileImageUrl,
 				token
