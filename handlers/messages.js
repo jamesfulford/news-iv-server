@@ -2,11 +2,20 @@ const db = require('../models');
 
 exports.createMessage = async function (req, res, next) {
 	try {
+		const foundUser = await db.User.findById(req.params.userId);
+		if (!foundUser) {
+			// Don't want to give away that this user does not exist
+			return next({
+				status: 401,
+				message: "Unauthorized",
+				code: 9000
+			});
+		}
 		const message = await db.Message.create({
 			text: req.body.text,
 			user: req.params.userId,
 		});
-		const foundUser = await db.User.findById(req.params.userId);
+
 		foundUser.messages.push(message);
 		await foundUser.save();
 		const foundMessage = await db.Message.findById(message._id).populate("user", {
